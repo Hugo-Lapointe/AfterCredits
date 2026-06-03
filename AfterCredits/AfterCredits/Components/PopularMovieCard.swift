@@ -8,19 +8,26 @@
 import SwiftUI
 
 struct PopularMovieCard: View {
-    let movie: MovieCard
+    let movie: TMDbMovie
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 18)
-                    .fill(AppTheme.accent.opacity(0.25))
-                    .frame(width: 150, height: 210)
+            AsyncImage(url: movie.posterURL) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+            } placeholder: {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 18)
+                        .fill(AppTheme.accent.opacity(0.25))
 
-                Image(systemName: movie.icon)
-                    .font(.system(size: 42))
-                    .foregroundStyle(AppTheme.accent)
+                    Image(systemName: "film.fill")
+                        .font(.system(size: 42))
+                        .foregroundStyle(AppTheme.accent)
+                }
             }
+            .frame(width: 150, height: 225)
+            .clipShape(RoundedRectangle(cornerRadius: 18))
 
             Text(movie.title)
                 .font(.headline)
@@ -28,7 +35,7 @@ struct PopularMovieCard: View {
                 .lineLimit(2)
                 .frame(width: 150, alignment: .leading)
 
-            Text(movie.subtitle)
+            Text(movie.releaseYear)
                 .font(.caption)
                 .foregroundStyle(AppTheme.textSecondary)
                 .frame(width: 150, alignment: .leading)
@@ -38,10 +45,12 @@ struct PopularMovieCard: View {
 
 #Preview {
     PopularMovieCard(
-        movie: MovieCard(
-            title: "Dune: Part Two",
-            subtitle: "Popular this week",
-            icon: "flame.fill"
+        movie: TMDbMovie(
+            id: 1,
+            title: "Batman",
+            overview: "A superhero movie.",
+            posterPath: nil,
+            releaseDate: "1989-06-23"
         )
     )
     .padding()

@@ -8,25 +8,45 @@
 import SwiftUI
 
 struct DiscoverView: View {
+    @StateObject private var viewModel = MovieSearchViewModel()
+
     var body: some View {
         NavigationStack {
             ZStack {
-                AppTheme.background
-                    .ignoresSafeArea()
+                AppTheme.background.ignoresSafeArea()
 
-                VStack(spacing: 20) {
-                    Image(systemName: "magnifyingglass")
-                        .font(.system(size: 60))
-                        .foregroundStyle(AppTheme.accent)
-
-                    Text("Discover Movies")
-                        .font(.title)
-                        .fontWeight(.bold)
+                VStack(spacing: 16) {
+                    TextField("Search movies...", text: $viewModel.searchText)
+                        .padding()
+                        .background(AppTheme.card)
                         .foregroundStyle(AppTheme.textPrimary)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .submitLabel(.search)
+                        .onSubmit {
+                            Task {
+                                await viewModel.searchMovies()
+                            }
+                        }
 
-                    Text("Search movies, directors, and recommendations.")
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .multilineTextAlignment(.center)
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .tint(AppTheme.accent)
+                    }
+
+                    if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .foregroundStyle(.red)
+                    }
+
+                    ScrollView {
+                        VStack(spacing: 14) {
+                            ForEach(viewModel.movies) { movie in
+                                MovieSearchRow(movie: movie)
+                            }
+                        }
+                    }
+
+                    Spacer()
                 }
                 .padding()
             }

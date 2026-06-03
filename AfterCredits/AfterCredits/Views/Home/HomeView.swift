@@ -9,12 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @Binding var selectedTab: AppTab
-    
-    let popularMovies = [
-        MovieCard(title: "Dune: Part Two", subtitle: "Popular this week", icon: "flame.fill"),
-        MovieCard(title: "Civil War", subtitle: "Trending now", icon: "chart.line.uptrend.xyaxis"),
-        MovieCard(title: "Nosferatu", subtitle: "Upcoming release", icon: "calendar")
-    ]
+    @StateObject private var viewModel = HomeViewModel()
 
     var body: some View {
         NavigationStack {
@@ -25,30 +20,66 @@ struct HomeView: View {
                     VStack(alignment: .leading, spacing: 24) {
                         Text("Your movie night starts after the credits roll.")
                             .foregroundStyle(AppTheme.textSecondary)
-
+                        
                         FeaturedCard()
                         QuickActions(selectedTab: $selectedTab)
                         WeeklyChallengeCard()
-
-                        VStack(alignment: .leading, spacing: 14) {
-                            Text("Popular This Week")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundStyle(AppTheme.textPrimary)
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 14) {
-                                    ForEach(popularMovies) { movie in
-                                        PopularMovieCard(movie: movie)
-                                    }
-                                }
-                            }
+                        
+                        if viewModel.isLoading {
+                            ProgressView()
+                                .tint(AppTheme.accent)
+                                .frame(maxWidth: .infinity)
                         }
+                        
+                        if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage)
+                                .foregroundStyle(.red)
+                        }
+                        
+                        Button {
+                            Task {
+                                await viewModel.loadHomeMovies()
+                            }
+                        } label: {
+                            Text("Load Trending Movies")
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(AppTheme.card)
+                                .foregroundStyle(AppTheme.textPrimary)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        }
+                        
+                        MovieSection(title: "Popular Movies", movies: viewModel.popularMovies)
                     }
                     .padding()
                 }
             }
             .navigationTitle("AfterCredits")
+            }
+    }
+}
+
+struct MovieSection: View {
+    let title: String
+    let movies: [TMDbMovie]
+
+    var body: some View {
+        if !movies.isEmpty {
+            VStack(alignment: .leading, spacing: 14) {
+                Text(title)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundStyle(AppTheme.textPrimary)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 14) {
+                        ForEach(movies.prefix(10)) { movie in
+                            PopularMovieCard(movie: movie)
+                        }
+                    }
+                }
+            }
         }
     }
 }
