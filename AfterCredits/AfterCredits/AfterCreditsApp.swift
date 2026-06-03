@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import FirebaseCore
+
+import SwiftUI
 
 @main
 struct AfterCreditsApp: App {
@@ -15,3 +18,4 @@ struct AfterCreditsApp: App {
         }
     }
 }
+
