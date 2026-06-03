@@ -10,19 +10,26 @@ import SwiftUI
 struct WatchlistView: View {
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
-                Image(systemName: "bookmark.fill")
-                    .font(.system(size: 50))
+            ZStack {
+                AppTheme.background
+                    .ignoresSafeArea()
 
-                Text("Watchlist")
-                    .font(.title)
-                    .fontWeight(.bold)
+                VStack(spacing: 20) {
+                    Image(systemName: "bookmark.fill")
+                        .font(.system(size: 60))
+                        .foregroundStyle(AppTheme.accent)
 
-                Text("Save movies you want to watch later.")
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    Text("Watchlist")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundStyle(AppTheme.textPrimary)
+
+                    Text("Save movies you want to watch later.")
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
             }
-            .padding()
             .navigationTitle("Watchlist")
         }
     }
@@ -30,4 +37,5 @@ struct WatchlistView: View {
 
 #Preview {
     WatchlistView()
+        .preferredColorScheme(.dark)
 }

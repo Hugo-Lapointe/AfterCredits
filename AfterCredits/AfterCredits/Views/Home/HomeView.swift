@@ -7,30 +7,53 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct HomeView: View {
+    @Binding var selectedTab: AppTab
+    
+    let popularMovies = [
+        MovieCard(title: "Dune: Part Two", subtitle: "Popular this week", icon: "flame.fill"),
+        MovieCard(title: "Civil War", subtitle: "Trending now", icon: "chart.line.uptrend.xyaxis"),
+        MovieCard(title: "Nosferatu", subtitle: "Upcoming release", icon: "calendar")
+    ]
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
-                Text("AfterCredits")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+            ZStack {
+                AppTheme.background.ignoresSafeArea()
 
-                Text("Your movie club starts here.")
-                    .foregroundStyle(.secondary)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        Text("Your movie night starts after the credits roll.")
+                            .foregroundStyle(AppTheme.textSecondary)
 
-                Button("Pick a Movie") {
-                    print("Movie roulette tapped")
+                        FeaturedCard()
+                        QuickActions(selectedTab: $selectedTab)
+                        WeeklyChallengeCard()
+
+                        VStack(alignment: .leading, spacing: 14) {
+                            Text("Popular This Week")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundStyle(AppTheme.textPrimary)
+
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 14) {
+                                    ForEach(popularMovies) { movie in
+                                        PopularMovieCard(movie: movie)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding()
                 }
-                .buttonStyle(.borderedProminent)
             }
-            .padding()
-            .navigationTitle("Home")
+            .navigationTitle("AfterCredits")
         }
     }
 }
 
 #Preview {
-    HomeView()
+    HomeView(selectedTab: .constant(.home))
+        .preferredColorScheme(.dark)
 }

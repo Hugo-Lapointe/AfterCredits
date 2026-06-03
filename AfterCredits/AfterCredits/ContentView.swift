@@ -8,37 +8,50 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selectedTab: AppTab = .home
+
+    init() {
+        UITabBar.appearance().backgroundColor = UIColor.black
+        UITabBar.appearance().unselectedItemTintColor = UIColor.gray
+    }
+
     var body: some View {
-        TabView {
-            HomeView()
+        TabView(selection: $selectedTab) {
+            HomeView(selectedTab: $selectedTab)
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }
+                .tag(AppTab.home)
 
             DiscoverView()
                 .tabItem {
                     Label("Discover", systemImage: "magnifyingglass")
                 }
+                .tag(AppTab.discover)
 
             RouletteView()
                 .tabItem {
                     Label("Roulette", systemImage: "shuffle")
                 }
+                .tag(AppTab.roulette)
 
-            WatchlistView()
+            DirectorsView()
                 .tabItem {
-                    Label("Watchlist", systemImage: "bookmark.fill")
+                    Label("Directors", systemImage: "person.crop.rectangle.stack.fill")
                 }
+                .tag(AppTab.directors)
 
             ProfileView()
                 .tabItem {
                     Label("Profile", systemImage: "person.fill")
                 }
+                .tag(AppTab.profile)
         }
-        .tint(.purple)
+        .tint(AppTheme.accent)
     }
 }
 
 #Preview {
     ContentView()
+        .preferredColorScheme(.dark)
 }

@@ -10,19 +10,38 @@ import SwiftUI
 struct RouletteView: View {
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
-                Image(systemName: "shuffle.circle.fill")
-                    .font(.system(size: 60))
+            ZStack {
+                AppTheme.background
+                    .ignoresSafeArea()
 
-                Text("Movie Roulette")
-                    .font(.title)
-                    .fontWeight(.bold)
+                VStack(spacing: 20) {
+                    Image(systemName: "shuffle.circle.fill")
+                        .font(.system(size: 80))
+                        .foregroundStyle(AppTheme.accent)
 
-                Text("Choose a mood and get a movie instantly.")
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    Text("Movie Roulette")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundStyle(AppTheme.textPrimary)
+
+                    Text("Choose a mood and get a movie instantly.")
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .multilineTextAlignment(.center)
+
+                    Button {
+                        print("Generate Movie")
+                    } label: {
+                        Text("Generate Movie")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(AppTheme.accent)
+                            .foregroundStyle(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
+                }
+                .padding()
             }
-            .padding()
             .navigationTitle("Roulette")
         }
     }
@@ -30,4 +49,5 @@ struct RouletteView: View {
 
 #Preview {
     RouletteView()
+        .preferredColorScheme(.dark)
 }
